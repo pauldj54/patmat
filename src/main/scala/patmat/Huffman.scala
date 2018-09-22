@@ -76,9 +76,14 @@ object Huffman {
    *   }
    */
     def times(chars: List[Char]): List[(Char, Int)] = chars match{
-    case Nil => Nil
-    case x::Nil => List((x, 1))
-    case x::xs =>  List((x,1)) ::: times(xs)
+      //def times_tmp(chars: List[Char]):List[(Char, Int)] = chars match{
+      case Nil => Nil
+      case x::Nil => List((x, 1))
+      case x::xs =>  List((x,1)) ::: times(xs)
+      //}
+      
+      //times_tmp(chars)
+      //.mapValues( _.map( _._2 ) )
   }
   
   /**
@@ -214,5 +219,8 @@ object Huffman {
 object Main extends App {
   val l = List('a', 'b', 'd', 'a')
   val h = Huffman.times(l)
-  h foreach println
+  println(h.getClass.toString())
+  h.groupBy(_._1) foreach println
+  h.groupBy(_._1).mapValues( _.map( _._2 ).sum ) foreach println
+  //h foreach println
 }
