@@ -1,6 +1,7 @@
 package patmat
 
 import common._
+import scala.collection.generic.Sorted
 
 /**
  * Assignment 4: Huffman coding
@@ -75,15 +76,13 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = chars match{
-      //def times_tmp(chars: List[Char]):List[(Char, Int)] = chars match{
-      case Nil => Nil
-      case x::Nil => List((x, 1))
-      case x::xs =>  List((x,1)) ::: times(xs)
-      //}
-      
-      //times_tmp(chars)
-      //.mapValues( _.map( _._2 ) )
+    def times(chars: List[Char]): List[(Char, Int)] = {
+      def times_tmp(chars: List[Char]):List[(Char, Int)] = chars match{
+        case Nil => Nil
+        case x::Nil => List((x, 1))
+        case x::xs =>  List((x,1)) ::: times(xs)
+      }
+      times_tmp(chars).groupBy(_._1).mapValues( _.map( _._2 ).sum ) toList
   }
   
   /**
@@ -93,7 +92,10 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+      freqs.map(f => Leaf(f._1, f._2)) toList 
+      
+    }
   
   /**
    * Checks whether the list `trees` contains only one single code tree.
@@ -220,7 +222,8 @@ object Main extends App {
   val l = List('a', 'b', 'd', 'a')
   val h = Huffman.times(l)
   println(h.getClass.toString())
-  h.groupBy(_._1) foreach println
-  h.groupBy(_._1).mapValues( _.map( _._2 ).sum ) foreach println
-  //h foreach println
+  h foreach println
+  
+  val le = Huffman.makeOrderedLeafList(h)
+  le foreach println
 }
